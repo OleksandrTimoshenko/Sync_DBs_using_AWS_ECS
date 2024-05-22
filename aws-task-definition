@@ -1,0 +1,33 @@
+aws ecs register-task-definition \
+    --family <YOUR_AWS_ECS_TASK_NAME> \
+    --network-mode awsvpc \
+    --requires-compatibilities FARGATE \
+    --cpu 256 \
+    --memory 512 \
+    --execution-role-arn arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole \
+    --container-definitions '[
+        {
+            "name": "<YOUR_AWS_ECS_TASK_NAME>",
+            "image": "<YOUR_REGISTRY/IMAGE:TAG>",
+            "essential": true,
+            "environment": [
+                {"name": "SOURCE_DB_HOST", "value": "<SOURCE_DB_HOST>"},
+                {"name": "TARGET_DB_POST", "value": "<TARGET_DB_POST>"},
+                {"name": "SOURCE_DB_USER", "value": "<SOURCE_DB_USER>"},
+                {"name": "TARGET_DB_USER", "value": "<TARGET_DB_USER>"},
+                {"name": "SOURCE_DB_NAME", "value": "<SOURCE_DB_NAME>"},
+                {"name": "TARGET_DB_NAME", "value": "<TARGET_DB_NAME>"},
+                {"name": "SOURCE_DB_PASSWORD", "value": "<SOURCE_DB_PASSWORD>"},
+                {"name": "TARGET_DB_PASSWORD", "value": "<TARGET_DB_PASSWORD>"},
+                {"name": "DUMP_NAME", "value": "<DUMP_NAME>.dump"}
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "<YOUR_AWS_LOG_GROUP_NAME>",
+                    "awslogs-region": "<YOUR_AWS_REGION>",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ]'
